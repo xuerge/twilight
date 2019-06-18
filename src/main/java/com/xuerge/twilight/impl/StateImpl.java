@@ -15,4 +15,8 @@ public class StateImpl implements State {
     public List<Transition> getTransition() {
         return transitions;
     }
+
+    public void setTransitions(List<Transition> transitions) {
+        this.transitions = transitions;
+    }
 }
