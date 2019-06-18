@@ -1,22 +1,31 @@
 package com.xuerge.twilight.impl;
 
+import com.google.common.collect.Maps;
 import com.xuerge.twilight.State;
 import com.xuerge.twilight.Transition;
 
-import java.util.List;
+import java.util.Map;
 
-public class StateImpl implements State {
+public class StateImpl<S, E, C> implements State<S, E, C> {
     private String name;
-    private List<Transition> transitions;
+    private Map<E, Transition> transitions = Maps.newHashMap();
+
+    public StateImpl(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
 
-    public List<Transition> getTransition() {
+    public Map<E, Transition> getTransition() {
         return transitions;
     }
 
-    public void setTransitions(List<Transition> transitions) {
-        this.transitions = transitions;
+    @Override
+    public void addTransition(E event, Transition t) {
+        transitions.put(event, t);
     }
+
+
 }

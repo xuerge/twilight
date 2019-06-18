@@ -1,11 +1,13 @@
 package com.xuerge.twilight;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@code State} is an interface representing possible state in a state machine.
  */
-public interface State<S, E, C> {
+public interface State<S, E, C>{
     String getName();
-    List<Transition> getTransition();
+    Map<E,Transition> getTransition();
+    void addTransition(E event, Transition t);
 }

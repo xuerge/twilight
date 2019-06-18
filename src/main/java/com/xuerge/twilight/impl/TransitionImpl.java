@@ -5,25 +5,36 @@ import com.xuerge.twilight.Event;
 import com.xuerge.twilight.State;
 import com.xuerge.twilight.Transition;
 
-public class TransitionImpl implements Transition {
-    private State from;
-    private State to;
-    private Event event;
+public class TransitionImpl<S, E, C> implements Transition {
+    private S from;
+    private S to;
+    private E event;
     private Action action;
 
-    public State getFrom() {
+    public TransitionImpl(S from, S to, E event) {
+        this.from = from;
+        this.to = to;
+        this.event = event;
+    }
+
+
+    @Override
+    public S getFrom() {
         return from;
     }
 
-    public State getTo() {
+    @Override
+    public S getTo() {
         return to;
     }
 
-    public Event getEvent() {
+    @Override
+    public E getEvent() {
         return event;
     }
 
+    @Override
     public Action getAction() {
-        return action;
+        return null;
     }
 }

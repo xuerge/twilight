@@ -6,7 +6,9 @@ import org.junit.Test;
 public class SimpleTest {
     @Test
     public void t() {
-        StateMachineBuilder<State, Event,Object> builder = new StateMachineBuilder();
+
+        StateMachineBuilder<State, Event,Object> builder = StateMachineBuilderFactory.getStateMachineBuilder(Simple.class,State.class,Event.class,Object.class);
+
 
         builder.transition().from(State.A).to(State.B).on(Event.ToB);
         builder.transition().from(State.B).to(State.C).on(Event.ToC);
@@ -15,6 +17,9 @@ public class SimpleTest {
         s.start(null);
     }
 
+    class Simple{
+
+    }
 
     enum State {
         A, B, C
