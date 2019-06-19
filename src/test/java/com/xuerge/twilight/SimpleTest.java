@@ -10,11 +10,22 @@ public class SimpleTest {
         StateMachineBuilder<State, Event,Object> builder = StateMachineBuilderFactory.getStateMachineBuilder(Simple.class,State.class,Event.class,Object.class);
 
 
-        builder.transition().from(State.A).to(State.B).on(Event.ToB);
-        builder.transition().from(State.B).to(State.C).on(Event.ToC);
-        StateMachine<State, Event,Object> s = builder.build();
+        builder.transition().from(State.A).to(State.B).on(Event.ToB).perform(new Action() {
+            @Override
+            public void execute(Object from, Object to, Object event, Object context) {
+                System.out.println("execute method from A to B");
+            }
+        });
+        builder.transition().from(State.B).to(State.C).on(Event.ToC).perform(new Action() {
+            @Override
+            public void execute(Object from, Object to, Object event, Object context) {
+                System.out.println("execute method from B to C");
+            }
+        });
+        StateMachine<State, Event,Object> s = builder.build(State.A);
 
-        s.start(null);
+        s.fire(Event.ToB,null);
+        s.fire(Event.ToC,null);
     }
 
     class Simple{

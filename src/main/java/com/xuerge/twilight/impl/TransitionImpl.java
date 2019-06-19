@@ -11,10 +11,11 @@ public class TransitionImpl<S, E, C> implements Transition {
     private E event;
     private Action action;
 
-    public TransitionImpl(S from, S to, E event) {
+    public TransitionImpl(S from, S to, E event,Action action) {
         this.from = from;
         this.to = to;
         this.event = event;
+        this.action = action;
     }
 
 
@@ -35,6 +36,6 @@ public class TransitionImpl<S, E, C> implements Transition {
 
     @Override
     public Action getAction() {
-        return null;
+        return action;
     }
 }
