@@ -33,7 +33,7 @@ public class StateMachineBuilder<S, E, C> {
     }
 
 
-    public StateMachine<S, E, C> build() {
+    public StateMachine<S, E, C> build(S initialState) {
         transitionBuilderList.forEach(t -> {
             State state = states.get(t.from);
             if (null != state) {
@@ -42,6 +42,7 @@ public class StateMachineBuilder<S, E, C> {
         });
         StateMachine<S, E, C> stateMachine = new StateMachineImpl<>();
         ((StateMachineImpl) stateMachine).states = states;
+        ((StateMachineImpl) stateMachine).currentState = initialState;
         return stateMachine;
     }
 
@@ -53,7 +54,7 @@ public class StateMachineBuilder<S, E, C> {
 
 
     /* From */
-    public static class TransitionBuilder<S, E, C> implements ExternalTransitionBuilder<S, E, C>, From<S, E, C>, To<S, E, C> {
+    public static class TransitionBuilder<S, E, C> implements ExternalTransitionBuilder<S, E, C>, From<S, E, C>, To<S, E, C> ,Perform<S,E,C>{
 
         private S from;
         private S to;
@@ -81,19 +82,24 @@ public class StateMachineBuilder<S, E, C> {
             if (null == s) {
                 states.put(stateId, new StateImpl(stateId.toString()));
             }
-            this.to = to;
+            this.to = stateId;
             return this;
         }
 
         @Override
-        public void on(E event) {
+        public Perform on(E event) {
             this.event = event;
+            return this;
         }
 
         public Transition build() {
             // TODO check transition data
-            return new TransitionImpl(from, to, event);
+            return new TransitionImpl(from, to, event, action);
         }
 
+        @Override
+        public void perform(Action<S, E, C> action) {
+         this.action = action;
+        }
     }
 }

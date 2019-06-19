@@ -7,7 +7,9 @@ import java.lang.reflect.Method;
 public class ActionImpl implements Action {
     Method method;
 
-    public void execute() {
+
+    @Override
+    public void execute(Object from, Object to, Object event, Object context) {
 
     }
 }
