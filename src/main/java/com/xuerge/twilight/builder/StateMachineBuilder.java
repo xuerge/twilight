@@ -40,13 +40,13 @@ public class StateMachineBuilder<S, E, C> {
                 state.addTransition(t.event, t.build());
             }
         });
-        StateMachine<S, E, C> stateMachine = new StateMachineImpl<>();
+        StateMachine<S, E, C> stateMachine = new StateMachineImpl<>(stateMachineImplClazz,stateClazz,eventClazz,contextClazz);
         ((StateMachineImpl) stateMachine).states = states;
         ((StateMachineImpl) stateMachine).currentState = initialState;
         return stateMachine;
     }
 
-    public TransitionBuilder transition() {
+    public TransitionBuilder<S, E, C> transition() {
         TransitionBuilder transitionBuilder = new TransitionBuilder(states);
         transitionBuilderList.add(transitionBuilder);
         return transitionBuilder;
@@ -100,6 +100,11 @@ public class StateMachineBuilder<S, E, C> {
         @Override
         public void perform(Action<S, E, C> action) {
          this.action = action;
+        }
+
+        @Override
+        public void invokeMethod(String methodName) {
+
         }
     }
 }

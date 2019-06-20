@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * {@code State} is an interface representing possible state in a state machine.
  */
-public interface State<S, E, C>{
+public interface State<State, E, C>{
     String getName();
     Map<E,Transition> getTransition();
     void addTransition(E event, Transition t);
