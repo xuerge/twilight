@@ -2,24 +2,23 @@ package com.xuerge.twilight.builder;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.xuerge.twilight.Action;
-import com.xuerge.twilight.State;
+import com.xuerge.twilight.StateData;
 import com.xuerge.twilight.StateMachine;
-import com.xuerge.twilight.Transition;
-import com.xuerge.twilight.impl.StateImpl;
-import com.xuerge.twilight.impl.StateMachineImpl;
-import com.xuerge.twilight.impl.TransitionImpl;
+import com.xuerge.twilight.impl.BaseStateMachine;
+import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class StateMachineBuilder<S, E, C> {
 
     private final Class stateMachineImplClazz;
     private final Class<S> stateClazz;
     private final Class<E> eventClazz;
     private final Class<C> contextClazz;
-    private Map<S, State> states = Maps.newConcurrentMap();
+    private Map<S, StateData> states = Maps.newConcurrentMap();
+    private final Class<?>[] methodCallParamTypes;
 
 
     private List<TransitionBuilder<S, E, C>> transitionBuilderList = Lists.newArrayList();
@@ -30,81 +29,37 @@ public class StateMachineBuilder<S, E, C> {
         this.stateClazz = stateClazz;
         this.eventClazz = eventClazz;
         this.contextClazz = contextClazz;
+        methodCallParamTypes = new Class[]{stateClazz, stateClazz, contextClazz, stateMachineImplClazz};
     }
 
 
     public StateMachine<S, E, C> build(S initialState) {
-        transitionBuilderList.forEach(t -> {
-            State state = states.get(t.from);
+        transitionBuilderList.forEach(tb -> {
+            StateData state = getOrCreateState(tb.getFrom());
             if (null != state) {
-                state.addTransition(t.event, t.build());
+                state.addTransition(tb.build(this));
             }
         });
-        StateMachine<S, E, C> stateMachine = new StateMachineImpl<>(stateMachineImplClazz,stateClazz,eventClazz,contextClazz);
-        ((StateMachineImpl) stateMachine).states = states;
-        ((StateMachineImpl) stateMachine).currentState = initialState;
+        StateMachine<S, E, C> stateMachine = new BaseStateMachine<>(stateMachineImplClazz, stateClazz, eventClazz, contextClazz);
+        ((BaseStateMachine) stateMachine).states = states;
+        ((BaseStateMachine) stateMachine).currentState = initialState;
         return stateMachine;
     }
 
     public TransitionBuilder<S, E, C> transition() {
-        TransitionBuilder transitionBuilder = new TransitionBuilder(states);
+        TransitionBuilder transitionBuilder = new TransitionBuilder();
         transitionBuilderList.add(transitionBuilder);
         return transitionBuilder;
     }
 
-
-    /* From */
-    public static class TransitionBuilder<S, E, C> implements ExternalTransitionBuilder<S, E, C>, From<S, E, C>, To<S, E, C> ,Perform<S,E,C>{
-
-        private S from;
-        private S to;
-        private E event;
-        private Action action;
-        private Map<S, State> states;
-
-        public TransitionBuilder(Map<S, State> states) {
-            this.states = states;
+    public StateData<S, E, C> getOrCreateState(S stateId) {
+        StateData s = states.get(stateId);
+        if (null == s) {
+            states.put(stateId, new StateData(stateId.toString()));
+            s = states.get(stateId);
         }
+        return s;
 
-        @Override
-        public From<S, E, C> from(S stateId) {
-            State s = states.get(stateId);
-            if (null == s) {
-                states.put(stateId, new StateImpl(stateId.toString()));
-            }
-            this.from = stateId;
-            return this;
-        }
-
-        @Override
-        public To to(S stateId) {
-            State s = states.get(stateId);
-            if (null == s) {
-                states.put(stateId, new StateImpl(stateId.toString()));
-            }
-            this.to = stateId;
-            return this;
-        }
-
-        @Override
-        public Perform on(E event) {
-            this.event = event;
-            return this;
-        }
-
-        public Transition build() {
-            // TODO check transition data
-            return new TransitionImpl(from, to, event, action);
-        }
-
-        @Override
-        public void perform(Action<S, E, C> action) {
-         this.action = action;
-        }
-
-        @Override
-        public void invokeMethod(String methodName) {
-
-        }
     }
+
 }

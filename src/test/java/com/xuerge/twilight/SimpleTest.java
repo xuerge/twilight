@@ -10,10 +10,10 @@ public class SimpleTest {
         StateMachineBuilder<State, Event, Object> builder = StateMachineBuilderFactory.getStateMachineBuilder(Simple.class, State.class, Event.class, Object.class);
 
 
-        builder.transition().from(State.A).to(State.B).on(Event.ToB).invokeMethod("fromAtoB");
-        builder.transition().from(State.B).to(State.C).on(Event.ToC).perform(new Action() {
+        builder.transition().from(State.A).to(State.B).on(Event.ToB).invoke("fromAtoB");
+        builder.transition().from(State.B).to(State.C).on(Event.ToC).invoke(new Action() {
             @Override
-            public void execute(Object from, Object to, Object event, Object context) {
+            public void execute(Object from, Object to, Object event, Object context, Object stateMachine) {
                 System.out.println("execute method from B to C");
             }
         });
