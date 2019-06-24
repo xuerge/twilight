@@ -32,12 +32,12 @@ public class MethodInvokeAction<S, E, C, T> implements Action<S, E, C, T> {
     }
 
     @Override
-    public void execute(S from, S to, E event, C context, T machine) {
+    public void execute(T machine, S from, S to, E event, C context) {
         try {
             if(!method.isAccessible()){
                 method.setAccessible(true);
             }
-            method.invoke((Simple)machine,from, to, context);
+            method.invoke(machine,from, to,event, context);
         } catch (IllegalAccessException e) {
             throw new StateMachineException(e);
         } catch (InvocationTargetException e) {

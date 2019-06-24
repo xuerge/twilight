@@ -3,33 +3,31 @@ package com.xuerge.twilight.impl;
 import com.xuerge.twilight.Action;
 import com.xuerge.twilight.Transition;
 
-public class TransitionImpl<S, E, C> implements Transition {
-    private S from;
-    private S to;
-    private E event;
+public class InternalTransition<S, E, C> implements Transition<S, E, C> {
+    private S s;
+    private E e;
     private Action action;
 
-    public TransitionImpl(S from, S to, E event,Action action) {
-        this.from = from;
-        this.to = to;
-        this.event = event;
+    public InternalTransition(S s, E event, Action action) {
+        this.s = s;
+        this.e = event;
         this.action = action;
     }
 
 
     @Override
     public S getFrom() {
-        return from;
+        return s;
     }
 
     @Override
     public S getTo() {
-        return to;
+        return s;
     }
 
     @Override
     public E getEvent() {
-        return event;
+        return e;
     }
 
     @Override
