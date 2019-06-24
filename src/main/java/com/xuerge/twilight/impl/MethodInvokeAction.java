@@ -1,9 +1,8 @@
 package com.xuerge.twilight.impl;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.xuerge.twilight.Action;
+import com.xuerge.twilight.example.Simple;
 import com.xuerge.twilight.StateMachine;
 import com.xuerge.twilight.StateMachineException;
 
@@ -24,7 +23,7 @@ public class MethodInvokeAction<S, E, C, T> implements Action<S, E, C, T> {
     }
 
     private void initMethod() {
-        Preconditions.checkArgument(stateMachineClazz.isAssignableFrom(StateMachine.class));
+        Preconditions.checkArgument(StateMachine.class.isAssignableFrom(stateMachineClazz));
         try {
             method = stateMachineClazz.getMethod(methodName, parameterTypes);
         } catch (NoSuchMethodException e) {
@@ -35,7 +34,10 @@ public class MethodInvokeAction<S, E, C, T> implements Action<S, E, C, T> {
     @Override
     public void execute(S from, S to, E event, C context, T machine) {
         try {
-            method.invoke(machine, from, to, event, context);
+            if(!method.isAccessible()){
+                method.setAccessible(true);
+            }
+            method.invoke((Simple)machine,from, to, context);
         } catch (IllegalAccessException e) {
             throw new StateMachineException(e);
         } catch (InvocationTargetException e) {

@@ -37,7 +37,7 @@ public class TransitionBuilder<S, E, C> implements ExternalTransitionBuilder<S, 
     }
 
     public Transition build(StateMachineBuilder sb) {
-        if(null == action && StringUtils.isEmpty(methodName)){
+        if(null == action && !StringUtils.isEmpty(methodName)){
             action = new MethodInvokeAction(sb.getStateMachineImplClazz(),methodName,sb.getMethodCallParamTypes());
         }
         return new TransitionImpl(from, to, event, action);

@@ -29,7 +29,7 @@ public class StateMachineBuilder<S, E, C> {
         this.stateClazz = stateClazz;
         this.eventClazz = eventClazz;
         this.contextClazz = contextClazz;
-        methodCallParamTypes = new Class[]{stateClazz, stateClazz, contextClazz, stateMachineImplClazz};
+        methodCallParamTypes = new Class[]{stateClazz, stateClazz, contextClazz};
     }
 
 

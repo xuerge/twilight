@@ -1,6 +1,9 @@
 package com.xuerge.twilight;
 
 import com.xuerge.twilight.builder.StateMachineBuilder;
+import com.xuerge.twilight.example.Event;
+import com.xuerge.twilight.example.Simple;
+import com.xuerge.twilight.example.State;
 import org.junit.Test;
 
 public class SimpleTest {
@@ -23,17 +26,9 @@ public class SimpleTest {
         s.fire(Event.ToC, null);
     }
 
-    enum State {
-        A, B, C
-    }
 
-    enum Event {
-        ToB, ToC
-    }
 
-    class Simple {
 
-    }
 
 }
 
