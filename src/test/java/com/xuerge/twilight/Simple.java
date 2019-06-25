@@ -15,6 +15,7 @@ public class Simple extends BaseStateMachine {
     public void leaveA(State from, State to, Event event,Object context){
         System.out.println("run method leaveA, context is " + context);
     }
+
     public void entryB(State from, State to, Event event,Object context){
         System.out.println("run method entryB, context is " + context);
     }
@@ -25,5 +26,8 @@ public class Simple extends BaseStateMachine {
 
     public void fromBtoC(State from, State to, Event event,Object context){
         System.out.println("run method fromBtoC");
+    }
+    public void inC(State from, State to, Event event,Object context){
+        System.out.println("run method inC");
     }
 }

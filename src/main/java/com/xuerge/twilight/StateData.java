@@ -9,7 +9,9 @@ import java.util.Map;
  */
 public class StateData<S, E, C>{
     private S stateId;
-    private Map<E, Transition> transitions = Maps.newHashMap();
+    private Map<E, Transition<S, E, C>> transitions = Maps.newHashMap();
+    private Action entryAction;
+    private Action leaveAction;
 
     public StateData(S stateId) {
         this.stateId = stateId;
@@ -19,7 +21,7 @@ public class StateData<S, E, C>{
         return stateId;
     }
 
-    public Map<E, Transition> getTransition() {
+    public Map<E, Transition<S, E, C>> getTransition() {
         return transitions;
     }
 
@@ -29,5 +31,21 @@ public class StateData<S, E, C>{
 
     public void addTransition(Transition<S, E, C> t) {
         transitions.put(t.getEvent(), t);
+    }
+
+    public Action getEntryAction() {
+        return entryAction;
+    }
+
+    public void setEntryAction(Action entryAction) {
+        this.entryAction = entryAction;
+    }
+
+    public Action getLeaveAction() {
+        return leaveAction;
+    }
+
+    public void setLeaveAction(Action leaveAction) {
+        this.leaveAction = leaveAction;
     }
 }

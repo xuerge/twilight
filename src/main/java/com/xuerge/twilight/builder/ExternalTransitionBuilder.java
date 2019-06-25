@@ -1,14 +1,17 @@
 package com.xuerge.twilight.builder;
 
 import com.xuerge.twilight.Action;
+import com.xuerge.twilight.StateData;
 import com.xuerge.twilight.Transition;
 import com.xuerge.twilight.impl.MethodInvokeAction;
 import com.xuerge.twilight.impl.ExternalTransition;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+
 //@Data
-public class ExternalTransitionBuilder<S, E, C> implements From<S, E, C>, To<S, E, C>, Perform<S, E, C>,TransitionBuilder {
+public class ExternalTransitionBuilder<S, E, C> implements From<S, E, C>, To<S, E, C>, Perform<S, E, C>,TransitionBuilder<S, E, C> {
 
     private S from;
     private S to;
@@ -54,25 +57,31 @@ public class ExternalTransitionBuilder<S, E, C> implements From<S, E, C>, To<S, 
         return from;
     }
 
+    @Override
     public void setFrom(S from) {
         this.from = from;
     }
 
-    public S getTo() {
+    @Override
+    public S  getTo() {
         return to;
     }
 
+    @Override
     public void setTo(S to) {
         this.to = to;
     }
 
+    @Override
     public E getEvent() {
         return event;
     }
 
+    @Override
     public void setEvent(E event) {
         this.event = event;
     }
+
 
     public Action getAction() {
         return action;

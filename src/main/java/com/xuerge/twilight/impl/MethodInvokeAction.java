@@ -2,7 +2,6 @@ package com.xuerge.twilight.impl;
 
 import com.google.common.base.Preconditions;
 import com.xuerge.twilight.Action;
-import com.xuerge.twilight.example.Simple;
 import com.xuerge.twilight.StateMachine;
 import com.xuerge.twilight.StateMachineException;
 

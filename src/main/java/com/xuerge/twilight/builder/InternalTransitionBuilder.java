@@ -1,6 +1,7 @@
 package com.xuerge.twilight.builder;
 
 import com.xuerge.twilight.Action;
+import com.xuerge.twilight.StateData;
 import com.xuerge.twilight.Transition;
 import com.xuerge.twilight.impl.InternalTransition;
 import com.xuerge.twilight.impl.MethodInvokeAction;
@@ -8,8 +9,10 @@ import com.xuerge.twilight.impl.ExternalTransition;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+
 @Data
-public class InternalTransitionBuilder<S, E, C> implements WithIn<S, E, C>, Perform<S, E, C> ,TransitionBuilder {
+public class InternalTransitionBuilder<S, E, C> implements WithIn<S, E, C>, Perform<S, E, C> ,TransitionBuilder<S, E, C> {
 
     private S s;
     private E event;
@@ -26,6 +29,26 @@ public class InternalTransitionBuilder<S, E, C> implements WithIn<S, E, C>, Perf
     public Perform on(E event) {
         this.event = event;
         return this;
+    }
+
+    @Override
+    public S getFrom() {
+        return s;
+    }
+
+    @Override
+    public void setFrom(S from) {
+        this.setS(from);
+    }
+
+    @Override
+    public S getTo() {
+        return s;
+    }
+
+    @Override
+    public void setTo(S to) {
+        this.setS(to);
     }
 
     public Transition build(StateMachineBuilder sb) {

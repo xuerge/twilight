@@ -1,6 +1,7 @@
 package com.xuerge.twilight.impl;
 
 import com.xuerge.twilight.Action;
+import com.xuerge.twilight.StateData;
 import com.xuerge.twilight.Transition;
 
 public class ExternalTransition<S, E, C> implements Transition {
