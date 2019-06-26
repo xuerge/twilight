@@ -1,5 +1,7 @@
-package com.xuerge.twilight;
+package com.xuerge.twilight.basic;
 
+import com.xuerge.twilight.StateMachine;
+import com.xuerge.twilight.StateMachineBuilderFactory;
 import com.xuerge.twilight.builder.StateMachineBuilder;
 import org.junit.Test;
 

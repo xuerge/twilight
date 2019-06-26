@@ -1,7 +1,12 @@
-package com.xuerge.twilight;
+package com.xuerge.twilight.basic;
 
+import com.xuerge.twilight.annotation.StateMachineDefinition;
+import com.xuerge.twilight.annotation.Transition;
+import com.xuerge.twilight.annotation.Transitions;
 import com.xuerge.twilight.impl.BaseStateMachine;
 
+@StateMachineDefinition(stateType = Event.class,eventType = Event.class,contextType = Object.class)
+@Transitions({@Transition(from = "",to="",on="")})
 public class Simple extends BaseStateMachine {
 
     public Simple() {

@@ -1,13 +1,10 @@
 package com.xuerge.twilight.generic;
 
 import com.google.common.collect.Lists;
-import com.xuerge.twilight.Event;
-import com.xuerge.twilight.State;
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 public class GenericTest {
     @Test

@@ -17,4 +17,6 @@ public @interface Transition {
     String on();
 
     TransitionType type() default TransitionType.EXTERNAL;
+
+    String callMethod() default "";
 }

@@ -29,22 +29,15 @@ import java.util.Map;
 @Slf4j
 public class StateMachineBuilder<S, E, C> {
 
-    private Class<?> stateMachineImplClazz;
-    private Class<S> stateClazz;
-    private Class<E> eventClazz;
-    private Class<C> contextClazz;
-    private Map<S, StateData<S, E, C>> states;
-    private Class<?>[] methodCallParamTypes;
+    protected Class stateMachineImplClazz;
+    protected Class<S> stateClazz;
+    protected Class<E> eventClazz;
+    protected Class<C> contextClazz;
+    protected Map<S, StateData<S, E, C>> states;
+    protected Class<?>[] methodCallParamTypes;
 
 
-    private List<TransitionBuilder<S, E, C>> transitionBuilderList = Lists.newArrayList();
-
-
-    public StateMachineBuilder(Class<? extends BaseStateMachine> stateMachineImplClazz) {
-        StateMachineDefinition smd = stateMachineImplClazz.getAnnotation(StateMachineDefinition.class);
-        init(stateMachineImplClazz, smd.stateType(), smd.eventType(), smd.contextType());
-
-    }
+    protected List<TransitionBuilder<S, E, C>> transitionBuilderList = Lists.newArrayList();
 
 
     public StateMachineBuilder(Class stateMachineImplClazz, Class<S> stateClazz, Class<E> eventClazz, Class<C> contextClazz) {
@@ -57,23 +50,10 @@ public class StateMachineBuilder<S, E, C> {
         this.eventClazz = eventClazz;
         this.contextClazz = contextClazz;
         methodCallParamTypes = new Class[]{stateClazz, stateClazz, eventClazz, contextClazz};
-        transitionFromImplClazz();
-    }
-
-    private void transitionFromImplClazz() {
-        Transitions trans = stateMachineImplClazz.getAnnotation(Transitions.class);
-        Transition[] tranArr = trans.value();
-        for(Transition t : tranArr){
-            if (TransitionType.EXTERNAL.equals(t.type()){
-                EnumUtils.getEnum(TransitionType.class,t.from());
-                externalTransition().from();
-            }
-
-        }
     }
 
 
-    public StateMachine<S, E, C> build(S initialState) throws NoSuchMethodException {
+    public StateMachine<S, E, C> build(S initialState) {
         createStages();
         buildTransitions();
         return buildMachine(initialState);
