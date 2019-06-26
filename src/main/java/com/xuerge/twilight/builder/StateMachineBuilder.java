@@ -3,12 +3,17 @@ package com.xuerge.twilight.builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.xuerge.twilight.*;
+import com.xuerge.twilight.annotation.StateMachineDefinition;
+import com.xuerge.twilight.annotation.Transition;
+import com.xuerge.twilight.annotation.Transitions;
 import com.xuerge.twilight.impl.BaseStateMachine;
 import com.xuerge.twilight.impl.MethodInvokeAction;
 import com.xuerge.twilight.util.ReflectionUtil;
 import com.xuerge.twilight.util.StopWatch;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.AnnotationUtils;
+import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -24,10 +29,10 @@ import java.util.Map;
 @Slf4j
 public class StateMachineBuilder<S, E, C> {
 
-    private final Class stateMachineImplClazz;
-    private final Class<S> stateClazz;
-    private final Class<E> eventClazz;
-    private final Class<C> contextClazz;
+    private Class<?> stateMachineImplClazz;
+    private Class<S> stateClazz;
+    private Class<E> eventClazz;
+    private Class<C> contextClazz;
     private Map<S, StateData<S, E, C>> states;
     private Class<?>[] methodCallParamTypes;
 
@@ -35,12 +40,36 @@ public class StateMachineBuilder<S, E, C> {
     private List<TransitionBuilder<S, E, C>> transitionBuilderList = Lists.newArrayList();
 
 
+    public StateMachineBuilder(Class<? extends BaseStateMachine> stateMachineImplClazz) {
+        StateMachineDefinition smd = stateMachineImplClazz.getAnnotation(StateMachineDefinition.class);
+        init(stateMachineImplClazz, smd.stateType(), smd.eventType(), smd.contextType());
+
+    }
+
+
     public StateMachineBuilder(Class stateMachineImplClazz, Class<S> stateClazz, Class<E> eventClazz, Class<C> contextClazz) {
+        init(stateMachineImplClazz, stateClazz, eventClazz, contextClazz);
+    }
+
+    private void init(Class stateMachineImplClazz, Class<S> stateClazz, Class<E> eventClazz, Class<C> contextClazz) {
         this.stateMachineImplClazz = stateMachineImplClazz;
         this.stateClazz = stateClazz;
         this.eventClazz = eventClazz;
         this.contextClazz = contextClazz;
         methodCallParamTypes = new Class[]{stateClazz, stateClazz, eventClazz, contextClazz};
+        transitionFromImplClazz();
+    }
+
+    private void transitionFromImplClazz() {
+        Transitions trans = stateMachineImplClazz.getAnnotation(Transitions.class);
+        Transition[] tranArr = trans.value();
+        for(Transition t : tranArr){
+            if (TransitionType.EXTERNAL.equals(t.type()){
+                EnumUtils.getEnum(TransitionType.class,t.from());
+                externalTransition().from();
+            }
+
+        }
     }
 
 
