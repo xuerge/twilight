@@ -2,13 +2,21 @@ package com.xuerge.twilight.annotation;
 
 import com.xuerge.twilight.impl.BaseStateMachine;
 
-@StateMachineDefinition(stateType = RlsState.class, eventType = RlsEvent.class, contextType = RlsContext.class)
+
+@States({
+        @State(name = "A",entryCallMethod = "init")
+})
+@StateMachineTypeParameter(stateType = RlsState.class, eventType = RlsEvent.class, contextType = RlsContext.class)
 @Transitions({
         @Transition(from = "A", to = "B", on = "AtoB", callMethod = "fromAtoB"),
         @Transition(from = "B", to = "C", on = "BtoC", callMethod = "fromBtoC"),
         @Transition(from = "C", to = "D", on = "CtoD", callMethod = "fromCtoD")
 })
 public class RlsStateMachine extends BaseStateMachine {
+
+    public void init(RlsState from, RlsState to, RlsEvent event, RlsContext context) {
+        System.out.println("execute method init");
+    }
     public void fromAtoB(RlsState from, RlsState to, RlsEvent event, RlsContext context) {
         System.out.println("execute method fromAtoB");
     }

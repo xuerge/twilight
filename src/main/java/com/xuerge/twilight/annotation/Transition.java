@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 public @interface Transition {
     String from();
 
+
+
     String to();
 
     String on();
@@ -19,4 +21,5 @@ public @interface Transition {
     TransitionType type() default TransitionType.EXTERNAL;
 
     String callMethod() default "";
+
 }

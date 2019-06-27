@@ -3,17 +3,12 @@ package com.xuerge.twilight.builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.xuerge.twilight.*;
-import com.xuerge.twilight.annotation.StateMachineDefinition;
-import com.xuerge.twilight.annotation.Transition;
-import com.xuerge.twilight.annotation.Transitions;
 import com.xuerge.twilight.impl.BaseStateMachine;
 import com.xuerge.twilight.impl.MethodInvokeAction;
 import com.xuerge.twilight.util.ReflectionUtil;
 import com.xuerge.twilight.util.StopWatch;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.AnnotationUtils;
-import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -33,7 +28,7 @@ public class StateMachineBuilder<S, E, C> {
     protected Class<S> stateClazz;
     protected Class<E> eventClazz;
     protected Class<C> contextClazz;
-    protected Map<S, StateData<S, E, C>> states;
+    protected Map<String, StateData<S, E, C>> states;
     protected Class<?>[] methodCallParamTypes;
 
 
@@ -93,21 +88,24 @@ public class StateMachineBuilder<S, E, C> {
 
     private void createStages() {
         // new states collection
-        states = Maps.newConcurrentMap();
-        // create stateData and put into collection
+        if (null == states)
+            states = Maps.newConcurrentMap();
+
         S[] allStates = stateClazz.getEnumConstants();
         Arrays.asList(allStates).forEach(s -> {
-            states.put(s,new StateData(s));
-        });
-
-        // create state entry & leave action
-        states.forEach((k,s)->{
-            s.setEntryAction(buildMethodInvokeAction("entry" + s.getStateId()));
-            s.setLeaveAction(buildMethodInvokeAction("leave" + s.getStateId()));
+            StateData stateData = states.get(s.toString());
+            if (stateData == null) {
+                // create stateData and put into collection
+                stateData = new StateData(s.toString());
+                // create state entry & leave action
+                stateData.setEntryAction(buildMethodInvokeAction("entry" + s.toString()));
+                stateData.setLeaveAction(buildMethodInvokeAction("leave" + s.toString()));
+                states.put(s.toString(), stateData);
+            }
         });
     }
 
-    private Action buildMethodInvokeAction(String methodName) {
+    protected Action buildMethodInvokeAction(String methodName) {
         Method method = ReflectionUtil.getMethod(stateMachineImplClazz, methodName, methodCallParamTypes);
         if (null != method)
             return new MethodInvokeAction(stateMachineImplClazz, methodName, methodCallParamTypes);
@@ -116,7 +114,7 @@ public class StateMachineBuilder<S, E, C> {
 
     private void buildTransitions() {
         transitionBuilderList.forEach(tb -> {
-            StateData data = states.get(tb.getFrom());
+            StateData data = states.get(tb.getFrom().toString());
             if (null != data) {
                 data.addTransition(tb.build(this));
             }

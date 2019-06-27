@@ -14,20 +14,25 @@ import java.util.concurrent.Future;
 @Setter
 public class BaseStateMachine<S, E, C> implements StateMachine<S, E, C> {
     private S currentState;
-    private StateData startState;
-    private Map<S, StateData<S, E, C>> states = Maps.newHashMap();
+    private Map<String, StateData<S, E, C>> states = Maps.newHashMap();
 
     private Class stateMachineImplClazz;
-    private Class<S> s;
-    private Class<E> e;
-    private Class<C> c;
+    private Class s;
+    private Class e;
+    private Class c;
 
     private ActionExecutor actionExecutor;
 
 
     @Override
+    public void start(C context) {
+        StateData stateData = states.get(currentState.toString());
+        actionExecutor.execute(stateData.getEntryAction(), currentState, currentState, context);
+    }
+
+    @Override
     public void fire(E event, C context) {
-        Transition<S, E, C> t = states.get(currentState).getTransition().get(event);
+        Transition<S, E, C> t = states.get(currentState.toString()).getTransition().get(event);
         actionExecutor.execute(t, context);
         currentState = t.getTo();
     }
@@ -38,23 +43,19 @@ public class BaseStateMachine<S, E, C> implements StateMachine<S, E, C> {
         return actionExecutor.executeSyn(t, context);
     }
 
-    @Override
-    public void start(C context) {
-        String methodName = "entry" + startState.getStateId();
-    }
 
     @Override
-    public Class<S> getStateClass() {
+    public Class getStateClass() {
         return s;
     }
 
     @Override
-    public Class<E> getEventClass() {
+    public Class getEventClass() {
         return e;
     }
 
     @Override
-    public Class<C> getContextClass() {
+    public Class getContextClass() {
         return c;
     }
 
@@ -64,7 +65,7 @@ public class BaseStateMachine<S, E, C> implements StateMachine<S, E, C> {
     }
 
     @Override
-    public Map<S, StateData<S, E, C>> getStates() {
+    public Map<String, StateData<S, E, C>> getStates() {
         return states;
     }
 

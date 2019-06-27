@@ -8,16 +8,16 @@ import java.util.Map;
  * {@code StateData} is an interface representing possible state in a state machine.
  */
 public class StateData<S, E, C>{
-    private S stateId;
+    private String stateId;
     private Map<E, Transition<S, E, C>> transitions = Maps.newHashMap();
     private Action entryAction;
     private Action leaveAction;
 
-    public StateData(S stateId) {
+    public StateData(String stateId) {
         this.stateId = stateId;
     }
 
-    public S getStateId() {
+    public String getStateId() {
         return stateId;
     }
 

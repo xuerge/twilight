@@ -5,15 +5,20 @@ import java.util.concurrent.Future;
 
 public interface StateMachine<S, E, C> {
 
-
-    void fire(E event,C context);
-    Future fireSyn(E event, C context);
-
     void start(C context);
 
-    Class<S> getStateClass();
-    Class<E> getEventClass();
-    Class<C> getContextClass();
+    void fire(E event, C context);
+
+    Future fireSyn(E event, C context);
+
+
+    Class getStateClass();
+
+    Class getEventClass();
+
+    Class getContextClass();
+
     Class<?> getImplClass();
-    Map<S, StateData<S, E, C>> getStates();
+
+    Map<String, StateData<S, E, C>> getStates();
 }
